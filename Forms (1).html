@@ -48,9 +48,9 @@
 
             let userDetails_serialized=JSON.stringify(userDetails)
 
-           axios.post("https://crudcrud.com/api/56645184e8b340b4acc121e8dd23ff1e/mydata",userDetails)
+           axios.post("https://crudcrud.com/api/7f13b9460a52425bb2fd1557b130e351/mydata",userDetails)
            .then((userDetails)=>{
-            console.log(userDetails.data)
+            // console.log(userDetails.data)
             // removeUserfromScreen(userDetails)
             // localStorage.setItem(userDetails.Email , userDetails_serialized)
             showNewUseronScreen(userDetails.data)
@@ -61,28 +61,23 @@
            
           }
 
-             window.addEventListener("DOMContentLoaded",() => {
-              axios.get("https://crudcrud.com/api/56645184e8b340b4acc121e8dd23ff1e/mydata")
-              .then((userDetails)=>{
-              for(let i=0;i<userDetails.data.length;i++){
-                    showNewUseronScreen(userDetails.data[i])
-                }
-              })
-             })
+            
+
             function showNewUseronScreen(user){
              const d=document.getElementById('ul')
-             const li= `<li id="${user.Email}"> ${user.Name} - ${user.Email} - ${user.Number} - ${user.Date} - ${user.Time} 
-              <button onclick = editUser('${user.Email}')> Edit </button> 
-              <button onclick = deleteUser('${user.Email}')> Delete </button> 
+             const li= `<li id="${user._id}"> ${user.Name} - ${user.Email} - ${user.Number} - ${user.Date} - ${user.Time} 
+              <button onclick = editUser('${user._id}')> Edit </button> 
+              <button onclick = deleteUser('${user._id}')> Delete </button> 
                </li>`
             
            d.innerHTML = d.innerHTML + li 
           
           }
-           function removeUserfromScreen(user) {
+
+          function removeUserfromScreen(userId) {
             let parent = document.getElementById('ul')
              
-            let child=document.getElementById(user.Email)
+            let child=document.getElementById(userId)
 
  
             if(child) {
@@ -90,20 +85,33 @@
             }
            }
        
-          function deleteUser(Email) {
+
+          function deleteUser(userId) {
             // console.log(emailID)
             //  from local storage
-            let tobeDeletedEmail=document.getElementById(Email)
-            let newparent1 = document.getElementById('ul')
-            newparent1.removeChild(tobeDeletedEmail)
-            localStorage.removeItem(Email)
-           
-          }
-             function editUser(Email) {
+            axios.delete(`https://crudcrud.com/api/7f13b9460a52425bb2fd1557b130e351/mydata/${userId}`)
+            .then((response)=>{
+                removeUserfromScreen(userId)
+                })
+            .catch((err)=>console.log(err))
+            
+           }
+
+             function editUser(userId) {
               let newparent = document.getElementById('ul')
-              let childToBeDeleted = document.getElementById(Email)
+              let childToBeDeleted = document.getElementById(userId)
               newparent.removeChild(childToBeDeleted);
              }
+             window.addEventListener("DOMContentLoaded",() => {
+              axios.get("https://crudcrud.com/api/7f13b9460a52425bb2fd1557b130e351/mydata")
+              .then((userDetails)=>{
+              for(let i=0;i<userDetails.data.length;i++){
+                    showNewUseronScreen(userDetails.data[i])
+                }
+              })
+             })
+          
+         
 
              
             </script>
